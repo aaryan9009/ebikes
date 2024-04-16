@@ -5,58 +5,123 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sign Up</title>
     <style>
-           body {
-      font-family: sans-serif;
-    }
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
 
-    form {
-      width: 300px;
-      margin: 0 auto;
-    }
+        .container {
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+            padding: 40px;
+            width: 300px;
+        }
 
-    input {
-      width: 100%;
-      padding: 10px;
-      margin-bottom: 10px;
-      border: 1px solid #ccc;
-      border-radius: 3px;
-    }
+        h3 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
 
-    button {
-      width: 100%;
-      padding: 10px;
-      background-color: #000;
-      color: #fff;
-      border: none;
-      border-radius: 3px;
-    }
+        form {
+            display: flex;
+            flex-direction: column;
+        }
 
-    .login-link {
-      text-align: center;
-      margin-top: 10px;
-    }
+        label {
+            margin-bottom: 6px;
+            font-weight: bold;
+        }
 
-    a {
-      color: #000;
-}
+        input {
+            padding: 10px;
+            margin-bottom: 20px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+
+        button {
+            padding: 10px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        .login-link {
+            text-align: center;
+            margin-top: 10px;
+        }
+
+        a {
+            color: #007bff;
+            text-decoration: none;
+            text-align: center;
+            margin: 10px;
+        }
     </style>
 </head>
 <body>
-      <form>
-    <h2>Sign Up</h2>
+<div class="container">
+    <h3>Register</h3>
+    <form onsubmit="register(event);">
+        <div class="form-group">
+            <label for="register-email">Email</label>
+            <input type="email" id="register-email" placeholder="Enter email" value="demo@example.com" required />
+        </div>
+        <div class="form-group">
+            <label for="register-password">Password</label>
+            <input type="password" id="register-password" placeholder="Password" value="password" required pattern=".{6,}" title="Six or more characters" />
+        </div>
+        <button type="submit">Sign Up</button>
+    </form>
+    <a href="#"></a>Already User</a>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/appwrite@13.0.1"></script>
+<script>
+    // Before we start doing anything, we need to init our Appwrite Web SDK
+    const client = new Appwrite.Client();
 
-    <input type="text" name="name" placeholder="Your Name" id="username">
-    <input type="email" name="email" placeholder="Your Email" id="useremail">
-    <input type="password" name="password" placeholder="Password" id="userpasswd">
-    <input type="password" name="password" placeholder="Confirm Password" id="confirmpasswd">
+client
+    .setEndpoint("https://cloud.appwrite.io/v1") // Set your own appwrite server endpoint here, if not sure, you can get this value from your project settings page.
+    .setProject("661e3a5fb7fa5a3b8fed"); // Your Appwrite Project UID, you can get it from your project settings page.
 
-    <button type="submit" id="btn">Sign Up</button>
-  </form>
+// Prepare all services we are going to use
+const account = new Appwrite.Account(client);
 
-  <div class="login-link">
-    <a href="/login.html">I already have an account.</a>
-  </div>
-    <script type="module" src="js/signup.js"></script>
+function register(event) {
+    account
+        .create(
+            "unique()",
+            event.target.elements["register-email"].value, // Email
+            event.target.elements["register-password"].value, // Password
+            "User Name"
+        )
+        .then(
+            function (response) {
+                alert("Account created succefully!");
+                location.href = "/login.html"
+            },
+            function (error) {
+                alert("Failed to create account");
+            }
+        );
 
+    event.preventDefault();
+}
+</script>
 </body>
 </html>

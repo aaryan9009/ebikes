@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login - Bike</title>
+   
+
     <style>
         * { box-sizing:border-box; }
 
@@ -248,16 +250,16 @@ footer img:focus , footer a:focus { outline: none; }
     <hgroup>
   <h1>Bikes</h1>
 </hgroup>
-<form>
+<form onsubmit="login(event);">
   <div class="group">
-    <input type="email" id="useremail" required><span class="highlight"></span><span class="bar"></span>
-    <label>Email</label>
+    <input type="email"  id="login-email" required><span class="highlight"></span><span class="bar"></span>
+    <label for="login-email">Email</label>
   </div>
   <div class="group">
-    <input type="password" id="userpasswd" required><span class="highlight"></span><span class="bar"></span>
-    <label>Password</label>
+    <input type="password" id="login-password" required pattern=".{6,}"><span class="highlight"></span><span class="bar"></span>
+    <label for="login-password">Password</label>
   </div>
-  <button type="button" class="button buttonBlue">LogIn
+  <button type="submit"  class="button buttonBlue">LogIn
     <div class="ripples buttonRipples"><span class="ripplesCircle"></span></div>
   </button>
   <div style="display: flex; justify-content: center; align-items: center;">
@@ -268,10 +270,80 @@ footer img:focus , footer a:focus { outline: none; }
   <p>You Gotta Love <a href="http://www.polymer-project.org/" target="_blank">Bike</a></p>
 </footer>
 
+
+<script src="https://cdn.jsdelivr.net/npm/appwrite@13.0.1"></script>
     <script src="js/jquery.min.js"></script>
     <script src="js/jquery-3.0.0.min.js"></script>
-   <script src="js/login.js" type="module">
-   </script> 
-   
+    <script>
+      // Before we start doing anything, we need to init our Appwrite Web SDK
+  const client = new Appwrite.Client();
+
+client
+ .setEndpoint("https://cloud.appwrite.io/v1") // Set your own appwrite server endpoint here, if not sure, you can get this value from your project settings page.
+ .setProject("661e3a5fb7fa5a3b8fed"); // Your Appwrite Project UID, you can get it from your project settings page.
+
+// Prepare all services we are going to use
+const account = new Appwrite.Account(client);
+function login(event) {
+         account
+             .createEmailSession(
+                 event.target.elements["login-email"].value, // Email
+                 event.target.elements["login-password"].value // Password
+             )
+             .then(
+                 function (response) {
+                     alert("Session created succefully!");
+                     client.subscribe("account", function(response) {
+                         console.log('Received Account event', response);
+                         
+                     });
+                     location.href = "/brand.html"
+
+                 },
+                 function (error) {
+                     alert("Failed to create session");
+                 }
+             );
+         
+         event.preventDefault();
+     }
+
+     $(window, document, undefined).ready(function() {
+
+$('input').blur(function() {
+  var $this = $(this);
+  if ($this.val())
+    $this.addClass('used');
+  else
+    $this.removeClass('used');
+});
+
+var $ripples = $('.ripples');
+
+$ripples.on('click.Ripples', function(e) {
+
+  var $this = $(this);
+  var $offset = $this.parent().offset();
+  var $circle = $this.find('.ripplesCircle');
+
+  var x = e.pageX - $offset.left;
+  var y = e.pageY - $offset.top;
+
+  $circle.css({
+    top: y + 'px',
+    left: x + 'px'
+  });
+
+  $this.addClass('is-active');
+
+});
+
+$ripples.on('animationend webkitAnimationEnd mozAnimationEnd oanimationend MSAnimationEnd', function(e) {
+  $(this).removeClass('is-active');
+});
+
+});
+
+ </script>
 </body>
 </html>

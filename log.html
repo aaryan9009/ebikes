@@ -1,0 +1,51 @@
+<div class="col-sm mb-5">
+    <h3 class="mb-4">Login</h3>
+    <form onsubmit="login(event);">
+        <div class="form-group">
+            <label for="login-email">Email</label>
+            <input type="email" class="form-control" id="login-email" placeholder="Enter email"
+                value="demo@example.com" required />
+        </div>
+        <div class="form-group">
+            <label for="login-password">Password</label>
+            <input type="password" class="form-control" id="login-password" placeholder="Password"
+                value="password" required pattern=".{6,}" title="Six or more characters" />
+        </div>
+        <button type="submit" class="btn btn-primary">Sign In</button>
+    </form>
+    
+<script src="https://cdn.jsdelivr.net/npm/appwrite@13.0.1"></script>
+    <script>
+         // Before we start doing anything, we need to init our Appwrite Web SDK
+     const client = new Appwrite.Client();
+
+client
+    .setEndpoint("https://cloud.appwrite.io/v1") // Set your own appwrite server endpoint here, if not sure, you can get this value from your project settings page.
+    .setProject("661e3a5fb7fa5a3b8fed"); // Your Appwrite Project UID, you can get it from your project settings page.
+
+// Prepare all services we are going to use
+const account = new Appwrite.Account(client);
+function login(event) {
+            account
+                .createEmailSession(
+                    event.target.elements["login-email"].value, // Email
+                    event.target.elements["login-password"].value // Password
+                )
+                .then(
+                    function (response) {
+                        alert("Session created succefully!");
+                        client.subscribe("account", function(response) {
+                            console.log('Received Account event', response);
+                        });
+
+                    },
+                    function (error) {
+                        alert("Failed to create session");
+                    }
+                );
+            
+            event.preventDefault();
+        }
+
+    </script>
+</div>

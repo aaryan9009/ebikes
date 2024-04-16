@@ -9,19 +9,16 @@ const passwd = () => {
 }
 
 
-import PocketBase from "../node_modules/pocketbase/dist/pocketbase.es.mjs";
+import { Client, Account } from 'appwrite';
 
-const pb = new PocketBase('http://127.0.0.1:8090');
+export const client = new Client();
 
-button.addEventListener('click', async () => {
-    const data = {
-        email_user: email(),
-        passwd_user: passwd()
-    };
-    console.log(data)
-    const authData = await pb.collection('users').authWithPassword(data.email_user, data.passwd_user);
-    window.location.href = "/brand.html"
-})
+client
+    .setEndpoint('https://cloud.appwrite.io/v1')
+    .setProject('661e3a5fb7fa5a3b8fed'); 
+
+export const account = new Account(client);
+export { ID } from 'appwrite';
 
 
 
